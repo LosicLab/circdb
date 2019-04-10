@@ -1,0 +1,10 @@
+name: circRNA_IBD_database2
+title: circRNA_IBD_database2
+username:
+account: losiclab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 835592
+bundleId: 1984064
+url: https://losiclab.shinyapps.io/circRNA_IBD_database2/
+when: 1554298524.97205
