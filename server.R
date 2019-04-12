@@ -34,7 +34,7 @@ server <- function(input, output) {
 
     # make the reactive histogram
     output$hist <- renderPlot({
-        # this does not work yet.
+        # this part does not work yet.
         # if (input$hslogx == TRUE){
         #     input$scx <- log(input$hsx)
         # }
@@ -48,6 +48,33 @@ server <- function(input, output) {
             hist <- hist + facet_grid(facets)
         }
         print(hist)
+    })
+
+    # set the inputs up for the volcano plot
+    vdata <- reactive(dataset)
+    vlabels <- reactive({
+                        dataset %>%
+                            filter(input$volcanoy < input$volcano_label_pcutoff) %>%
+                            filter(input$volcanox > input$volcano_label_exprcutoff)
+        })
+
+    # render volcano plot panel
+    output$volcano_plot <- renderPlot({
+
+        volc <- ggplot(data=vdata()) +
+                aes_string(x=input$volcanox, y=input$volcanoy) +
+                geom_jitter(alpha=0.5) +
+                theme_classic()
+
+        if (input$volcano_color != 'None'){
+            hist <- hist + aes_string(color=input$volcano_color)
+        }
+
+        volc <- volc +
+                geom_label_repel(data=vlabels(),
+                                 aes_string(x=input$volcanox, y=input$volcanoy, label=input$volcano_label))
+
+
     })
 
     # render output datatable
