@@ -74,9 +74,11 @@ server <- function(input, output) {
                 geom_label_repel(data=vlabels(),
                                  aes_string(x=input$volcanox, y=input$volcanoy, label=input$volcano_label))
 
+        print(volc)
+
 
     })
 
     # render output datatable
-    output$tbl <- renderDataTable(dataset, filter = 'top', options=list(scrollX=TRUE))
+    output$tbl <- DT::renderDataTable(dataset, filter = 'top', options=list(scrollX=TRUE))
 }

@@ -24,8 +24,8 @@ body <- dashboardBody(
                                tabPanel(title='Volcano Plot Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
                                         numericInput('volcano_label_pcutoff', label = 'Gene label p-value cutoff', value=0.05, min=0, max=1),
                                         numericInput('volcano_label_exprcutoff', label = 'Gene label p-value cutoff', value=2),
-                                        selectInput('volcanox', 'X: Expression'),
-                                        selectInput('volcanoy', 'Y: P values'),
+                                        selectInput('volcanox', 'X: Expression', names(dataset[, exprs_cols])),
+                                        selectInput('volcanoy', 'Y: P values', names(dataset[, pval_cols])),
                                         selectInput('volcano_color', 'Color', c('None', names(dataset[, !chars])))
                                         )
                                )

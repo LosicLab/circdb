@@ -31,7 +31,7 @@ cid <- c('geneID', 'circID', "Exon1",
          'trait', 'mRNA_mlog10_pval', 'cRNA_mlog10_pval',
          'method','is_cRNA_coloc_greater',
          # circDB
-         'circbaseID', 'genomic_length', 'spliced_seq_length',
+         'circbase_ID', 'genomic_length', 'spliced_seq_length',
          'repeats', 'annotation', 'circRNA_study')
 
 # subset relevant columns for table display
@@ -62,7 +62,7 @@ cid <- c('GeneSymbol', 'BackspliceLocation', "BackspliceExon1",
          'trait', 'mRNA_mlog10_pval', 'cRNA_mlog10_pval',
          'method','is_cRNA_coloc_greater',
          # circbase
-         'circbaseID', 'genomic_length', 'spliced_seq_length',
+         'circbase_ID', 'genomic_length', 'spliced_seq_length',
          'repeats', 'annotation', 'circRNA_study')
 
 
@@ -77,5 +77,7 @@ nums <- sapply(dataset, is.numeric)
 facs <- sapply(dataset, is.factor)
 chars <- sapply(dataset, is.character)
 
+exprs_cols <- c('logFC_CD_vs_Control', 'logFC_UC_vs_Control', 'logFC_vdjnorm')
+pval_cols <- c('padj_CD_vs_Control', 'padj_UC_vs_Control', 'padj_vdjnorm')
 
-save(nums, facs, chars, dataset, file='data/_circdb.rdata')
+save(nums, facs, chars, exprs_cols, pval_cols, dataset, file='data/_circdb.rdata')
