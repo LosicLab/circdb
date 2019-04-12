@@ -34,3 +34,16 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
+
+# ds store indexing files
+*DS*Store*
+
+# random log files
+*.log
+
+# alignments, reads, variants
+*.bam
+*.bai
+*.fastq
+*.fa*
+*.vcf*
