@@ -7,7 +7,7 @@ library(dashboardthemes)
 #------------
 # dataset
 #------------
-dataset <- read.table('Data/master_intergration_table_circRNA__bycirc_FACS__commonSNP_and_distalSNP_with_COLOC__DEG_biopsy_overlap_with_miRNA_binding.tab', header=T, check.names = F)
+dataset <- read.table('data/master_intergration_table_circRNA__bycirc_FACS__commonSNP_and_distalSNP_with_COLOC__DEG_biopsy_overlap_with_miRNA_binding.tab', header=T, check.names = F)
 
 
 cid <- c('geneID', 'circID', "Exon1",

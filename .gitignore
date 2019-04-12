@@ -41,6 +41,9 @@ rsconnect/
 # random log files
 *.log
 
+# genomic data folder
+genome/
+
 # alignments, reads, variants
 *.bam
 *.bai
