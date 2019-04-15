@@ -15,12 +15,15 @@ server <- function(input, output) {
 
     # make the reactive scatter plot object
     output$scatter <- renderPlot({
+
+        # this commented section isn't working yet ...
         # if (input$sclogx){
         #   input$scx <- log(input$scx)
         # }
         # if (input$sclogy){
         #   input$scy <- log(input$scy)
         # }
+
         scatter <- ggplot(plot_data(), aes_string(x=input$scx, y=input$scy)) + geom_point() + theme_classic()
         if (input$sccolor != 'None'){
             scatter <- scatter + aes_string(color=input$sccolor)
@@ -51,31 +54,52 @@ server <- function(input, output) {
     })
 
     # set the inputs up for the volcano plot
-    vdata <- reactive(dataset)
-    vlabels <- reactive({
-                        dataset %>%
-                            filter(input$volcanoy < input$volcano_label_pcutoff) %>%
-                            filter(input$volcanox > input$volcano_label_exprcutoff)
-        })
+
+    # vlabels <- reactive({
+    #     a <- subset(dataset, -log(as.numeric(input$volcanoy)) > -log(as.numeric(input$volcano_label_pcutoff)))
+    #     a$padj_CD_vs_Control = -log(a$padj_CD_vs_Control)
+    #     a$padj_UC_vs_Control = -log(a$padj_UC_vs_Control)
+    #     a$padj_vdjnorm = -log(a$padj_vdjnorm)
+    #     return(a)
+    # })
+
 
     # render volcano plot panel
     output$volcano_plot <- renderPlot({
 
-        volc <- ggplot(data=vdata()) +
+        vdata <- dataset %>%
+                    mutate(padj_CD_vs_Control = -log(padj_CD_vs_Control),
+                        padj_UC_vs_Control = -log(padj_UC_vs_Control),
+                        padj_vdjnorm = -log(padj_vdjnorm))
+
+        volc <- ggplot(data=vdata) +
                 aes_string(x=input$volcanox, y=input$volcanoy) +
                 geom_jitter(alpha=0.5) +
                 theme_classic()
 
         if (input$volcano_color != 'None'){
-            hist <- hist + aes_string(color=input$volcano_color)
+            volc <- volc + aes_string(color=input$volcano_color)
         }
 
-        volc <- volc +
-                geom_label_repel(data=vlabels(),
-                                 aes_string(x=input$volcanox, y=input$volcanoy, label=input$volcano_label))
+        volc <- volc + geom_hline(yintercept = -log(input$volcano_label_pcutoff))
 
+        # something is fishy here ...
+        if(input$volcano_label != 'None'){
+        volc <- volc +
+                geom_label_repel(data=vdata[input$volcanoy > -log(input$volcano_label_pcutoff), ],
+                                 aes_string(label=input$volcano_label))
+
+        }
         print(volc)
 
+    })
+
+
+    output$gbrowser <- renderPlot({
+        gsymbol <- as.character(test$GeneSymbol[1])
+
+        ensembl_gene_track <- BiomartGeneRegionTrack(genome="hg19", name="ENSEMBL", symbol=input$gsymbol)
+        print(plotTracks(list(axis_track, ensembl_gene_track)))
 
     })
 

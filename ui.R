@@ -11,26 +11,33 @@ body <- dashboardBody(
         # start with a dashboard-style home page
         tabItem(tabName = "visualize",
                 fluidRow(
-                    column(width=4,
-                        box(title = "Histogram",
-                        solidHeader = TRUE, plotOutput("hist", height = 250)),
-                         box(title = "Scatter",
-                        solidHeader = TRUE, plotOutput("scatter", height = 250))
-                        ),
-                    column(width=8,
-                           tabBox(
-                               tabPanel(title = "Volcano Plots",
-                               solidHeader = TRUE, plotOutput("volcano_plot", height = 250)),
-                               tabPanel(title='Volcano Plot Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
-                                        numericInput('volcano_label_pcutoff', label = 'Gene label p-value cutoff', value=0.05, min=0, max=1),
-                                        numericInput('volcano_label_exprcutoff', label = 'Gene label p-value cutoff', value=2),
-                                        selectInput('volcanox', 'X: Expression', names(dataset[, exprs_cols])),
-                                        selectInput('volcanoy', 'Y: P values', names(dataset[, pval_cols])),
-                                        selectInput('volcano_color', 'Color', c('None', names(dataset[, !chars])))
-                                        )
-                               )
-                    )
+                        box(width=4, title = "Scatter",
+                        solidHeader = TRUE, plotOutput("scatter")),
+
+                        tabBox(width=8, height = 400,
+                           tabPanel(title = "Volcano Plots",
+                           solidHeader = TRUE, plotOutput("volcano_plot")),
+
+                           tabPanel(title='Volcano Plot Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
+                                    numericInput('volcano_label_pcutoff', label = 'Gene label p-value cutoff', value=0.05, min=0, max=1),
+                                    selectInput('volcanox', 'X: Expression', names(dataset[, exprs_cols])),
+                                    selectInput('volcanoy', 'Y: P values', names(dataset[, pval_cols])),
+                                    selectInput('volcano_color', 'Color', c('None', names(dataset[, !chars]))),
+                                    selectInput('volcano_label', 'Label', c('None', names(dataset[, chars|facs])))
+                                    )
+                           )
                 ),
+                fluidRow(
+                    box(width = 4, title = "Histogram",
+                             solidHeader = TRUE, plotOutput("hist")),
+                    tabBox(width=8, height = 400,
+                           tabPanel(title = "Genome Browser",
+                                    solidHeader = TRUE, plotOutput("gbrowser")),
+
+                           tabPanel(title='Browser Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
+                                    selectInput('gsymbol', 'select a circle:', test$GeneSymbol) )
+                           )
+                    ),
                 fluidRow(
                     tabBox(width = 4,
                            tabPanel(title = "Scatter Settings", solidHeader = TRUE, status='warning',
@@ -58,6 +65,7 @@ body <- dashboardBody(
                                     #checkboxInput('hslogx', 'Log Transform X') # as of right now this does not work
                            )
                     )
+
                 )
         ),
 

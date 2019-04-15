@@ -1,7 +1,7 @@
 # prepare database for shiny app
 
 library(tidyverse)
-
+library(GenomicFeatures)
 #------------
 # dataset
 #------------
@@ -80,4 +80,17 @@ chars <- sapply(dataset, is.character)
 exprs_cols <- c('logFC_CD_vs_Control', 'logFC_UC_vs_Control', 'logFC_vdjnorm')
 pval_cols <- c('padj_CD_vs_Control', 'padj_UC_vs_Control', 'padj_vdjnorm')
 
-save(nums, facs, chars, exprs_cols, pval_cols, dataset, file='data/_circdb.rdata')
+
+
+
+# define genomic browser tracks & info
+test <- dataset %>% tidyr::separate(col = BackspliceLocation, into=c('chr', 'start', 'end'),'-|:', remove=FALSE)
+test$gr_strand <- as.character(test$Strand)
+test$gr_strand[test$gr_strand %in% c('-/+', '+/-')] <- '*'
+
+axis_track <- GenomeAxisTrack()
+
+
+save(nums, facs, chars, exprs_cols, pval_cols, dataset, test, axis_track, file='data/_circdb.rdata')
+
+
