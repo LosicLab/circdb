@@ -41,66 +41,82 @@ server <- function(input, output) {
         # if (input$hslogx == TRUE){
         #     input$scx <- log(input$hsx)
         # }
+        withProgress(message = 'loading histogram', value=0, expr={
 
-        hist <- ggplot(plot_data(), aes_string(x=input$hsx)) + geom_density() + theme_classic()
-        if (input$hscolor != 'None'){
-            hist <- hist + aes_string(fill=input$hscolor)
+                hist <- ggplot(plot_data(), aes_string(x=input$hsx)) + geom_density() + theme_classic()
+
+                incProgress(amount=0.25, detail='adding points...')
+
+                if (input$hscolor != 'None'){
+                    incProgress(amount = 0.5, detail='adding colors...')
+                    hist <- hist + aes_string(fill=input$hscolor)
+                }
+                facets <- paste(input$hsfacet_row, '~', input$hsfacet_col)
+                if (facets != '. ~ .'){
+                    incProgress(amount=0.75, detail='adding facets...')
+                    hist <- hist + facet_grid(facets)
+                }
+                incProgress(amount = 0.8, detail='rendering plot...')
+                print(hist)
         }
-        facets <- paste(input$hsfacet_row, '~', input$hsfacet_col)
-        if (facets != '. ~ .'){
-            hist <- hist + facet_grid(facets)
-        }
-        print(hist)
+        )
     })
-
-    # set the inputs up for the volcano plot
-
-    # vlabels <- reactive({
-    #     a <- subset(dataset, -log(as.numeric(input$volcanoy)) > -log(as.numeric(input$volcano_label_pcutoff)))
-    #     a$padj_CD_vs_Control = -log(a$padj_CD_vs_Control)
-    #     a$padj_UC_vs_Control = -log(a$padj_UC_vs_Control)
-    #     a$padj_vdjnorm = -log(a$padj_vdjnorm)
-    #     return(a)
-    # })
 
 
     # render volcano plot panel
     output$volcano_plot <- renderPlot({
 
-        vdata <- dataset %>%
-                    mutate(padj_CD_vs_Control = -log(padj_CD_vs_Control),
-                        padj_UC_vs_Control = -log(padj_UC_vs_Control),
-                        padj_vdjnorm = -log(padj_vdjnorm))
+        vy <- vdata[, input$volcanoy] > -log(input$volcano_label_pcutoff)
+        vlabels <- vdata[vy,]
 
-        volc <- ggplot(data=vdata) +
+        withProgress(message = 'plotting volcano', value = 0, expr =  {
+            volc <- ggplot(data=vdata) +
                 aes_string(x=input$volcanox, y=input$volcanoy) +
                 geom_jitter(alpha=0.5) +
                 theme_classic()
 
-        if (input$volcano_color != 'None'){
-            volc <- volc + aes_string(color=input$volcano_color)
-        }
+            if (input$volcano_color != 'None'){
+                volc <- volc + aes_string(color=input$volcano_color)
+            }
 
-        volc <- volc + geom_hline(yintercept = -log(input$volcano_label_pcutoff))
 
-        # something is fishy here ...
-        if(input$volcano_label != 'None'){
-        volc <- volc +
-                geom_label_repel(data=vdata[input$volcanoy > -log(input$volcano_label_pcutoff), ],
-                                 aes_string(label=input$volcano_label))
+            volc <- volc +
+                    geom_hline(yintercept = -log(input$volcano_label_pcutoff), linetype='dashed', size=0.2)
 
-        }
-        print(volc)
+            incProgress(amount = 0.25, detail = 'adding points ...')
+            # something is fishy here ...
+            if(input$volcano_label != 'None'){
+                volc <- volc +
+                    geom_label_repel(data=vlabels,
+                                     aes_string(label=input$volcano_label))
+            incProgress(amount=0.5, detail = 'adding labels ...')
+            }
+
+            volc <- volc + labs(y=paste0('-log(', input$volcanoy, ')'))
+            incProgress(amount = 0.75, detail = 'rendering plot ...')
+            print(volc)
+            })
 
     })
 
+    output$gbrowse_title <- renderText({
+        as.character(input$gsymbol)
+        })
 
     output$gbrowser <- renderPlot({
-        gsymbol <- as.character(test$GeneSymbol[1])
+        withProgress(message = 'Loading gene browser', value=0, expr={
+                        ensembl_gene_track <- BiomartGeneRegionTrack(genome="hg19", name="ENSEMBL", symbol=as.character(input$gsymbol), fill='darkblue', col='darkblue')
+                        bmt <- BiomartGeneRegionTrack(genome = 'hg19', symbol=as.character(input$gsymbol), filter=list(with_ox_refseq_mrna=TRUE), stacking='dense', fill='black', col='black',name='Gene')
 
-        ensembl_gene_track <- BiomartGeneRegionTrack(genome="hg19", name="ENSEMBL", symbol=input$gsymbol)
-        print(plotTracks(list(axis_track, ensembl_gene_track)))
 
+                        chr <- gbrowsedf[gbrowsedf$GeneSymbol == input$gsymbol,]$chr[1]
+                        idx_track <- IdeogramTrack(genome = 'hg19', chromosome = chr)
+                        #introns <- browser_gr[browser_gr$BackspliceLocation == input$gbacksplice]
+
+                        incProgress(0.5, detail='...')
+                        print(plotTracks(list(idx_track, axis_track, bmt, ensembl_gene_track), sizes = c(1,0.5, 1, 5)) )
+                        }
+        )
     })
 
     # render output datatable

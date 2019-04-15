@@ -2,6 +2,8 @@
 
 library(tidyverse)
 library(GenomicFeatures)
+library(Gviz)
+library(GenomicRanges)
 #------------
 # dataset
 #------------
@@ -80,17 +82,23 @@ chars <- sapply(dataset, is.character)
 exprs_cols <- c('logFC_CD_vs_Control', 'logFC_UC_vs_Control', 'logFC_vdjnorm')
 pval_cols <- c('padj_CD_vs_Control', 'padj_UC_vs_Control', 'padj_vdjnorm')
 
+# prep df for volcano plot
+vdata <- dataset %>%
+    mutate(padj_CD_vs_Control = -log(padj_CD_vs_Control),
+           padj_UC_vs_Control = -log(padj_UC_vs_Control),
+           padj_vdjnorm = -log(padj_vdjnorm))
 
 
 
 # define genomic browser tracks & info
-test <- dataset %>% tidyr::separate(col = BackspliceLocation, into=c('chr', 'start', 'end'),'-|:', remove=FALSE)
-test$gr_strand <- as.character(test$Strand)
-test$gr_strand[test$gr_strand %in% c('-/+', '+/-')] <- '*'
+gbrowsedf <- dataset %>% tidyr::separate(col = BackspliceLocation, into=c('chr', 'start', 'end'),'-|:', remove=FALSE)
+gbrowsedf$gr_strand <- as.character(gbrowsedf$Strand)
+gbrowsedf$gr_strand[gbrowsedf$gr_strand %in% c('-/+', '+/-')] <- '*'
 
 axis_track <- GenomeAxisTrack()
 
+browser_gr <- makeGRangesFromDataFrame(gbrowsedf, seqnames.field = 'chr', start.field = 'start', end.field = 'end', strand.field = 'gr_strand',keep.extra.columns = TRUE)
 
-save(nums, facs, chars, exprs_cols, pval_cols, dataset, test, axis_track, file='data/_circdb.rdata')
+save(nums, facs, chars, exprs_cols, pval_cols, dataset, gbrowsedf, vdata, axis_track,browser_gr, file='data/_circdb.rdata')
 
 

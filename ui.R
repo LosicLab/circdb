@@ -11,36 +11,13 @@ body <- dashboardBody(
         # start with a dashboard-style home page
         tabItem(tabName = "visualize",
                 fluidRow(
-                        box(width=4, title = "Scatter",
-                        solidHeader = TRUE, plotOutput("scatter")),
-
-                        tabBox(width=8, height = 400,
-                           tabPanel(title = "Volcano Plots",
-                           solidHeader = TRUE, plotOutput("volcano_plot")),
-
-                           tabPanel(title='Volcano Plot Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
-                                    numericInput('volcano_label_pcutoff', label = 'Gene label p-value cutoff', value=0.05, min=0, max=1),
-                                    selectInput('volcanox', 'X: Expression', names(dataset[, exprs_cols])),
-                                    selectInput('volcanoy', 'Y: P values', names(dataset[, pval_cols])),
-                                    selectInput('volcano_color', 'Color', c('None', names(dataset[, !chars]))),
-                                    selectInput('volcano_label', 'Label', c('None', names(dataset[, chars|facs])))
-                                    )
-                           )
-                ),
-                fluidRow(
-                    box(width = 4, title = "Histogram",
-                             solidHeader = TRUE, plotOutput("hist")),
-                    tabBox(width=8, height = 400,
-                           tabPanel(title = "Genome Browser",
-                                    solidHeader = TRUE, plotOutput("gbrowser")),
-
-                           tabPanel(title='Browser Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
-                                    selectInput('gsymbol', 'select a circle:', test$GeneSymbol) )
-                           )
-                    ),
-                fluidRow(
-                    tabBox(width = 4,
-                           tabPanel(title = "Scatter Settings", solidHeader = TRUE, status='warning',
+                    tabBox(width=4,
+                           tabPanel( title = "Scatter",
+                                     solidHeader = TRUE,
+                                     plotOutput("scatter")),
+                           tabPanel(title = "Scatter Settings",
+                                    solidHeader = TRUE,
+                                    icon=icon('cog', lib='font-awesome'),
                                     br(),
                                     # to visualize all the circles with
                                     # user-specified parameters
@@ -53,8 +30,27 @@ body <- dashboardBody(
                                                 #                    c("X" = "sclogx",
                                                 #                      "Y" = "sclogy"))
                                     )
-                           ),
-                           tabPanel(title = "Histogram Settings", solidHeader = TRUE,status='warning',
+                           )
+                    ),
+
+                    tabBox(width=8,
+                           tabPanel(title = "Volcano Plots",
+                                    solidHeader = TRUE, plotOutput("volcano_plot")),
+
+                           tabPanel(title='Volcano Plot Settings', solidHeader=TRUE, icon=icon('cog', lib='font-awesome'),
+                                    numericInput('volcano_label_pcutoff', label = 'Gene label p-value cutoff', value=0.05, min=0, max=1),
+                                    selectInput('volcanox', 'X: Expression', names(dataset[, exprs_cols])),
+                                    selectInput('volcanoy', 'Y: P values', names(dataset[, pval_cols])),
+                                    selectInput('volcano_color', 'Color', c('None', names(dataset[, !chars]))),
+                                    selectInput('volcano_label', 'Label', c('None', names(dataset[, chars|facs])))
+                           )
+                    )
+                ),
+                fluidRow(
+                    tabBox(width = 4,
+                           tabPanel(title = "Histogram",
+                                    solidHeader = TRUE, plotOutput("hist")),
+                           tabPanel(title = "Histogram Settings", solidHeader = TRUE, icon=icon('cog', lib='font-awesome'),
                                     br(),
                                     # to visualize all the circles with
                                     # user-specified parameters
@@ -64,8 +60,21 @@ body <- dashboardBody(
                                     selectInput('hsfacet_col', 'Facet Column', c(None='.', names(dataset[, facs]))) #,
                                     #checkboxInput('hslogx', 'Log Transform X') # as of right now this does not work
                            )
-                    )
+                    ),
+                    tabBox(width=8,
+                           tabPanel(title = "Gene Browser",
+                                    solidHeader = TRUE,
+                                    h4(textOutput('gbrowse_title')),
+                                    plotOutput("gbrowser")
+                                    ),
 
+                           tabPanel(title='Browser Settings',
+                                    solidHeader=TRUE,
+                                    icon=icon('cog', lib='font-awesome'),
+                                    selectInput('gsymbol', 'select a gene symbol:', gbrowsedf$GeneSymbol, gbrowsedf$GeneSymbol[1]) #,
+                                    #selectInput('gbacksplice', 'select a backsplice location:', gbrowsedf$BackspliceLocation, gbrowsedf$BackspliceLocation[1])
+                                    )
+                    )
                 )
         ),
 
