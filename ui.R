@@ -64,15 +64,14 @@ body <- dashboardBody(
                     tabBox(width=8,
                            tabPanel(title = "Gene Browser",
                                     solidHeader = TRUE,
-                                    h4(textOutput('gbrowse_title')),
+                                    h5(textOutput('gbrowse_title')),
                                     plotOutput("gbrowser")
                                     ),
 
                            tabPanel(title='Browser Settings',
                                     solidHeader=TRUE,
                                     icon=icon('cog', lib='font-awesome'),
-                                    selectInput('gsymbol', 'select a gene symbol:', gbrowsedf$GeneSymbol, gbrowsedf$GeneSymbol[1]) #,
-                                    #selectInput('gbacksplice', 'select a backsplice location:', gbrowsedf$BackspliceLocation, gbrowsedf$BackspliceLocation[1])
+                                    selectInput('gsymbol', 'select a circID:', gbrowsedf$BackspliceLocation, gbrowsedf$BackspliceLocation[1])
                                     )
                     )
                 )

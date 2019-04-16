@@ -4,6 +4,10 @@ library(tidyverse)
 library(GenomicFeatures)
 library(Gviz)
 library(GenomicRanges)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+
 #------------
 # dataset
 #------------
@@ -88,7 +92,10 @@ vdata <- dataset %>%
            padj_UC_vs_Control = -log(padj_UC_vs_Control),
            padj_vdjnorm = -log(padj_vdjnorm))
 
-
+ensids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$GeneSymbol), column="ENSEMBL", keytype="SYMBOL", multiVals="first")
+entrezids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$GeneSymbol), column="ENTREZID", keytype="SYMBOL", multiVals="first")
+dataset$ensembl_id <- ensids
+dataset$entrez_id <- entrezids
 
 # define genomic browser tracks & info
 gbrowsedf <- dataset %>% tidyr::separate(col = BackspliceLocation, into=c('chr', 'start', 'end'),'-|:', remove=FALSE)
@@ -96,6 +103,7 @@ gbrowsedf$gr_strand <- as.character(gbrowsedf$Strand)
 gbrowsedf$gr_strand[gbrowsedf$gr_strand %in% c('-/+', '+/-')] <- '*'
 
 axis_track <- GenomeAxisTrack()
+genome <- TxDb.Hsapiens.UCSC.hg19.knownGene
 
 browser_gr <- makeGRangesFromDataFrame(gbrowsedf, seqnames.field = 'chr', start.field = 'start', end.field = 'end', strand.field = 'gr_strand',keep.extra.columns = TRUE)
 

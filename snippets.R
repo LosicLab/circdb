@@ -4,7 +4,7 @@ library(ggbio)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(ASpli)
 library(Gviz)
-library(AnnotationDbi)
+
 library(org.Hs.eg.db)
 
 # Get UCSC reference loaded & ready
@@ -24,8 +24,7 @@ library(org.Hs.eg.db)
 #
 #
 #
-# ensids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$GeneSymbol), column="ENSEMBL", keytype="SYMBOL", multiVals="first")
-# dataset$ensembl_id <- ensids
+
 #
 #
 #
@@ -73,24 +72,22 @@ plotTracks(list(axis_track, ensembl_gene_track))
 
 test_gr <- makeGRangesFromDataFrame(test, seqnames.field = 'chr', start.field = 'start', end.field = 'end', strand.field = 'gr_strand',keep.extra.columns = TRUE)
 
-library('GenVisR')
+
+
+
 # need transcript data for reference
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+library(AnnotationDbi)
+genome <- TxDb.Hsapiens.UCSC.hg19.knownGene
 
-# need a biostrings object for reference
-library(BSgenome.Hsapiens.UCSC.hg19)
-genome <- BSgenome.Hsapiens.UCSC.hg19
-
-gr <- test_gr[test_gr$BackspliceLocation == 'chr1:100889778-100908552']
-
-layer_track <- geom_curve()
-
-p1 <- geneViz(txdb, gr, genome, reduce=TRUE, labelTranscript = TRUE, labelTranscriptSize = TRUE)
-plot <- p1[[1]]
-plot
-
-plot + geom_curve(x=p1[[2]]$start, xend=p1[[2]]$end)
+junction <- browser_gr[browser_gr$BackspliceLocation == browser_gr$BackspliceLocation[1]]
 
 
 
+
+gquery <- genes(genome)[which(genes(genome)$gene_id == junction$entrez_id),]
+
+# get the exons with the gene coordinates
+gquery <- subsetByOverlaps(exons(genome), gquery)
+
+exons <- gquery[c(junction$BackspliceExon1:junction$BackspliceExon2),]

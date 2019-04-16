@@ -100,21 +100,34 @@ server <- function(input, output) {
     })
 
     output$gbrowse_title <- renderText({
-        as.character(input$gsymbol)
+        gene <- dataset[dataset$BackspliceLocation == input$gsymbol,]$GeneSymbol
+        paste0('Gene symbol: ', as.character(gene),' - ', as.character(input$gsymbol))
         })
 
     output$gbrowser <- renderPlot({
         withProgress(message = 'Loading gene browser', value=0, expr={
-                        ensembl_gene_track <- BiomartGeneRegionTrack(genome="hg19", name="ENSEMBL", symbol=as.character(input$gsymbol), fill='darkblue', col='darkblue')
-                        bmt <- BiomartGeneRegionTrack(genome = 'hg19', symbol=as.character(input$gsymbol), filter=list(with_ox_refseq_mrna=TRUE), stacking='dense', fill='black', col='black',name='Gene')
-
-
-                        chr <- gbrowsedf[gbrowsedf$GeneSymbol == input$gsymbol,]$chr[1]
+                        gene <- gbrowsedf[gbrowsedf$BackspliceLocation == input$gsymbol,]$GeneSymbol[1]
+                        chr <- gbrowsedf[gbrowsedf$BackspliceLocation == input$gsymbol,]$chr[1]
+                        junction <- browser_gr[browser_gr$BackspliceLocation == input$gsymbol]
+                        
+                        
+                        # get the exons with the gene coordinates
+                        # to plot the backsplice
+                        gquery <- genes(genome)[which(genes(genome)$gene_id == junction$entrez_id),]
+                        gquery <- subsetByOverlaps(exons(genome), gquery)
+                        exons <- gquery[c(junction$BackspliceExon1:junction$BackspliceExon2),]
+                        
+                        # make the tracks
                         idx_track <- IdeogramTrack(genome = 'hg19', chromosome = chr)
-                        #introns <- browser_gr[browser_gr$BackspliceLocation == input$gbacksplice]
-
+                        bmt <- BiomartGeneRegionTrack(genome = 'hg19', symbol=as.character(gene), filter=list(with_ox_refseq_mrna=TRUE), stacking='dense', fill='black', col='black',name='Consensus')
+                        splice_track <- DataTrack(range = exons, name = "junction", genome = 'hg19') # TODO: highlight positions where the backsplice occurs
+                        ensembl_gene_track <- BiomartGeneRegionTrack(genome="hg19", name="ENSEMBL Isoforms", symbol=as.character(gene), fill='darkblue', col='darkblue')
+                        
+                        #print(splice_track)
+                        
                         incProgress(0.5, detail='...')
-                        print(plotTracks(list(idx_track, axis_track, bmt, ensembl_gene_track), sizes = c(1,0.5, 1, 5)) )
+                        
+                        print(plotTracks(list(idx_track, axis_track, bmt, ensembl_gene_track), sizes = c(1,1,1,5)))
                         }
         )
     })
