@@ -1,12 +1,12 @@
 # global.R
 
-libs <- c('shiny', 
-          'tidyverse', 
+libs <- c('shiny',
+          'tidyverse',
           'DT',
-          'shinydashboard', 
-          'ggrepel', 
-          'GenomicFeatures', 
-          'Gviz', 
+          'shinydashboard',
+          'ggrepel',
+          'GenomicFeatures',
+          'Gviz',
           'GenomicRanges',
           'TxDb.Hsapiens.UCSC.hg19.knownGene')
 
@@ -14,5 +14,6 @@ libs <- c('shiny',
 lapply(libs, library, character.only=TRUE)
 
 load('data/_circdb.rdata')
+
 
 genome <- TxDb.Hsapiens.UCSC.hg19.knownGene
