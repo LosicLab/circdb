@@ -100,7 +100,7 @@ server <- function(input, output) {
     })
 
     output$gbrowse_title <- renderText({
-        gene <- dataset[dataset$BackspliceLocation == input$gsymbol,]$GeneSymbol
+        gene <- dataset[dataset$BackspliceLocation == input$gsymbol,]$GeneSymbol[1]
         paste0('Gene symbol: ', as.character(gene),' - ', as.character(input$gsymbol))
         })
 
