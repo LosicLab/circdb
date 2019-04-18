@@ -103,10 +103,13 @@ gbrowsedf$gr_strand <- as.character(gbrowsedf$Strand)
 gbrowsedf$gr_strand[gbrowsedf$gr_strand %in% c('-/+', '+/-')] <- '*'
 
 axis_track <- GenomeAxisTrack()
-genome <- TxDb.Hsapiens.UCSC.hg19.knownGene
+
 
 browser_gr <- makeGRangesFromDataFrame(gbrowsedf, seqnames.field = 'chr', start.field = 'start', end.field = 'end', strand.field = 'gr_strand',keep.extra.columns = TRUE)
 
-save(nums, facs, chars, exprs_cols, pval_cols, dataset, gbrowsedf, vdata, axis_track,browser_gr, file='data/_circdb.rdata')
+snps <- read_tsv('data/common_cRNA_mRNA_SNPS_by_gene.txt')
+
+
+save(nums, facs, chars, exprs_cols, pval_cols, dataset, gbrowsedf, vdata, axis_track, snps, file='data/_circdb.rdata')
 
 

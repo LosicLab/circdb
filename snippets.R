@@ -91,3 +91,37 @@ gquery <- genes(genome)[which(genes(genome)$gene_id == junction$entrez_id),]
 gquery <- subsetByOverlaps(exons(genome), gquery)
 
 exons <- gquery[c(junction$BackspliceExon1:junction$BackspliceExon2),]
+
+
+
+#----------------
+# circlize
+# ---------------
+library(tidyverse)
+library(circlize)
+test_circle <- 'chr10:13233299-13234568'
+snps <- read_tsv('data/common_cRNA_mRNA_SNPS_by_gene.txt')
+snps_filtered <- snps %>%
+                 as_tibble() %>%
+                 dplyr::filter(trait_id == test_circle) %>%
+                 mutate(chr=paste0('chr', chr),
+                        pos=as.numeric(pos),
+                        pos2=as.numeric(pos),
+                        val=-log(pvalue)) %>%
+                 dplyr::select(chr, pos, pos2, val)
+
+snps_filtered <- as.data.frame(snps_filtered)
+
+# , chromosome.index = paste0("chr", c(1:22, "X", "Y"))
+circos.initializeWithIdeogram(species='hg19') 
+## important to have enough space for the plots
+circos.par("track.height" = 0.2)
+
+
+circos.genomicTrack(snps_filtered, ylim=c(min(snps_filtered$val), max(snps_filtered$val)), panel.fun = function(region, val, ...) {
+  circos.genomicPoints(region, val, col = 'black', pch = 16, cex = 0.5, ...)
+  
+})
+circos.clear()
+
+

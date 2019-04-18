@@ -113,8 +113,8 @@ server <- function(input, output) {
 
                         # get the exons with the gene coordinates
                         # to plot the backsplice
-                        gquery <- genes(genome)[which(genes(genome)$gene_id == junction$entrez_id),]
-                        gquery <- subsetByOverlaps(exons(genome), gquery)
+                        gquery <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene)[which(genes(TxDb.Hsapiens.UCSC.hg19.knownGene)$gene_id == junction$entrez_id),]
+                        gquery <- subsetByOverlaps(exons(TxDb.Hsapiens.UCSC.hg19.knownGene), gquery)
                         exons <- gquery[c(junction$BackspliceExon1,junction$BackspliceExon2),]
                         exons$exon_id <- NULL
                         exons$value <- '5'
@@ -134,7 +134,39 @@ server <- function(input, output) {
                         }
         )
     })
-
+    
+    output$circQTL_title <- renderText({
+      gene <- snps[snps$trait_id == input$circqtlid,]$gene_symbol[1]
+      paste0('Gene symbol: ', as.character(gene),' - ', as.character(input$gsymbol))
+    })
+    
+    
+    output$circqtlos <- renderPlot({
+      
+      snps_filtered <- snps %>%
+        as_tibble() %>%
+        dplyr::filter(trait_id == input$circqtlid) %>%
+        mutate(chr=paste0('chr', chr),
+               pos=as.numeric(pos),
+               pos2=as.numeric(pos),
+               val=-log(pvalue)) %>%
+        dplyr::select(chr, pos, pos2, val) %>%
+        as.data.frame()
+      
+      # plot the circos
+      
+      circos.initializeWithIdeogram(species='hg19')
+      circos.par("track.height" = 0.2)
+      circos.genomicTrack(snps_filtered, ylim=c(min(snps_filtered$val), max(snps_filtered$val)), panel.fun = function(region, val, ...) {
+        circos.genomicPoints(region, val, col = 'black', pch = 16, cex = 0.5, ...)
+        
+      })
+      circos.clear()
+      
+      
+      
+    })
+    
     # render output datatable
     output$tbl <- DT::renderDataTable(dataset, filter = 'top', options=list(scrollX=TRUE))
 }
