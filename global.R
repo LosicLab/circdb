@@ -8,8 +8,9 @@ libs <- c('shiny',
           'GenomicFeatures',
           'Gviz',
           'GenomicRanges',
-          'TxDb.Hsapiens.UCSC.hg19.knownGene',
-          'circlize')
+          'TxDb.Hsapiens.UCSC.hg19.knownGene' #,
+          #'circlize'
+          )
 
 # install.packages(libs)
 lapply(libs, library, character.only=TRUE)

@@ -11,8 +11,7 @@ body <- dashboardBody(
         # start with a dashboard-style home page
         tabItem(tabName = "visualize",
                 fluidRow(
-                    
-                    tabBox(width=8,
+                    tabBox(width=12,
                            tabPanel(title = "Gene Browser",
                                     solidHeader = TRUE,
                                     h5(textOutput('gbrowse_title')),
@@ -24,20 +23,20 @@ body <- dashboardBody(
                                     icon=icon('cog', lib='font-awesome'),
                                     selectInput('gsymbol', 'select a circID:', gbrowsedf$BackspliceLocation, gbrowsedf$BackspliceLocation[1])
                                     )
-                    ),
-                    tabBox(width=4,
-                           tabPanel(title = "Regulatory circQTLs",
-                                    solidHeader = TRUE,
-                                    h5(textOutput('circQTL_title')),
-                                    plotOutput("circqtlos")
-                           ),
-                           
-                           tabPanel(title='circQTL Settings',
-                                    solidHeader=TRUE,
-                                    icon=icon('cog', lib='font-awesome'),
-                                    selectInput('circqtlid', 'select a circID:', snps$trait_id, snps$trait_id[1])
-                           )
-                    )
+                    ) #,
+                    # tabBox(width=4,
+                    #        tabPanel(title = "Regulatory circQTLs",
+                    #                 solidHeader = TRUE,
+                    #                 h5(textOutput('circQTL_title')),
+                    #                 plotOutput("circqtlos")
+                    #        ),
+                    #        
+                    #        tabPanel(title='circQTL Settings',
+                    #                 solidHeader=TRUE,
+                    #                 icon=icon('cog', lib='font-awesome'),
+                    #                 selectInput('circqtlid', 'select a circID:', snps$trait_id, snps$trait_id[1])
+                    #        )
+                    #)
                 ),
                 fluidRow(
                   tabBox(width=12,
