@@ -1,0 +1,45 @@
+"geneID",GeneSymbol: geneic locus of transcription		
+"circID",Backsplice: start/end of backsplice mapping in hg19
+"circbase_ID",circbase_ID: circbase ID for this backsplice					
+"Exon1",Exon_1: annotated first exon within major isoform  
+"Exon2",Exon_2: annotated second exon within major isoform  
+"Strand",Strand: backsplice alignment strand
+"SpliceType",SpliceType: exonic or intronic circRNA
+"genomic_length",GenomicLength: length of unspliced circRNA
+"spliced_seq_length",SplicedLength: length of spliced circRNA 
+"annotation",Annotation: overlapping known hg19 annotation 
+"repeats",Repeats: overlapping known repeats
+"in_other_samples",InOtherSamples: also found in these celltypes
+"circRNA_study",InOther_circRNA_study: also observed in these studies
+"AveExpr_log2cpm",AverageExpression: log2cpm average MSCCR-blood expression
+"AveExpr_log2cpm_Biopsy",AverageExpression: log2cpm average MSCCR-biopsy expression (if observed)
+"mean_circ_fraction",MeanCircularization: backsplice support normalized by maximal forward splice (MSCCR-blood)
+"mean_circ_fraction_Biopsy",MeanCircularization: backsplice support normalized by maximal forward splice (MSCCR-biopsy)
+"logFC_CD_vs_Control",logFoldChange_CD_vs_Control: log fold change for CD vs Control (MSCCR-blood)
+"padj_CD_vs_Control",p_adj_CD_vs_Control: BH-corrected p value for CD vs Control (MSCCR-blood)
+"logFC_UC_vs_Control",logFoldChange_UC_vs_Control: log fold change for UC vs Control (MSCCR-blood)
+"padj_UC_vs_Control",p_adj_UC_vs_Control: BH-corrected p value for UC vs Control (MSCCR-blood)
+"logFC_vdjnorm",logFoldChange_VDJ_seq: log fold change for T/BCR seq normalized total expression (MSCCR-blood)
+"padj_vdjnorm",p_adj_VDJ_seq: BH-corrected p value for for T/BCR seq normalized total expression (MSCCR-blood)
+"best_binding_miRNA",Predicted_miRNA: best-3prime UTR binding miRNA 
+"miRNA_bind_sites_per_kB_circRNA",miRNA_Sponginess: number of miRNA binding sites per kB spliced circRNA
+"predictor",CellType: FACS category used in elastic-net model for circRNA expression 
+"no_parent_regressed",CellType_enet_Coefficient_without_parent: value of elastic-net coefficient for predictor without parent mRNA regressed
+"parent_regressed",CellType_enet_Coefficient_with_parent: value of elastic-net coefficient for predictor with parent mRNA regressed (<=CellType_enet_Coefficient)
+"delta_parent",CellType_Parent_Effect: difference in elastic-net coefficients when regressing out parent
+"no_parent_regressed_rank",CellType_enet_model_rank: term rank in model (lowest is more important; highest least important) without regressing parent mRNA
+"parent_regressed_rank",CellType_enet_model_rank: term rank in model (lowest is more important; highest least important) with regressing parent mRNA
+"num_feature__cRNA",Num_of_circRNA_isoforms: number of distinct circRNA transcribed from same locus controlled by SNP
+"num_SNP_feature__cRNA",Num_SNPs: number of SNPs associated with circRNA
+"num_SNP_feature__mRNA",Num_SNPs: number of SNPs associated with mRNA
+"middle_beta__cRNA",AverageBeta_circRNA: average logFoldChange in circRNA for every copy of variant allele
+"middle_beta__mRNA",AverageBeta_mRNA: average logFoldChange in parent mRNA for every copy of variant allele
+"cis_trans__mRNA",Cis_Trans_mRNA: cis or trans SNPs for mRNA
+"cis_trans__cRNA",Cis_Trans_mRNA: cis or trans SNPs for circRNA
+"common_or_uncommon",Opposite_QTL_Effects: do AverageBeta_circRNA and AverageBeta_mRNA have same sign (common)
+"opposite_QTL_effect",Opposite_QTL_Effects: do AverageBeta_circRNA and AverageBeta_mRNA have same sign (no)
+"trait",coloc_Trait: phenotypic trait tested in de Lange GWAS (PMC5289481): IBD | CD | UC
+"mRNA_mlog10_pval",mRNA_parent_cauaslity_pvalue: -log10(p_value) of causality test for risk mediation (pleiotropy null); SNP -> mRNA -> trait
+"cRNA_mlog10_pval",circRNA_parent_cauaslity_pvalue: -log10(p_value) of causality test for risk mediation (pleiotropy null); SNP -> circRNA -> trait
+"method",coloc_method: colcalization method used (SMR | MetaXCan | COLOC)
+"is_cRNA_coloc_greater",circRNA_colocalize: do circRNA daughers mediate more risk for trait than mRNA parents

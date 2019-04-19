@@ -168,5 +168,19 @@ server <- function(input, output) {
     # })
     
     # render output datatable
-    output$tbl <- DT::renderDataTable(dataset, filter = 'top', options=list(scrollX=TRUE))
+    output$tbl <- DT::renderDataTable({
+      columnLabels <- col_details$detail
+      
+      DT::datatable(
+        dataset,
+        
+        filter='top',
+        
+        options = list(scrollX=TRUE, scrollY='200px',
+                       columnDefs=list(list(targets='_all', class="dt-right")) ),
+        
+        container = sketch
+      )
+      
+      })
 }

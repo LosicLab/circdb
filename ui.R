@@ -92,7 +92,7 @@ body <- dashboardBody(
 
         tabItem(tabName = "table",
                 fluidRow(box(title= 'Table Explorer',
-                             solidHeader = TRUE, dataTableOutput('tbl'), width = 12))
+                             solidHeader = TRUE, DT::dataTableOutput('tbl'), width = 12))
         )
     )
 )
