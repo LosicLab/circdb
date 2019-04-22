@@ -167,6 +167,6 @@ sketch <- htmltools::withTags(table(
   )
 ))
 
-save(nums, facs, chars, exprs_cols, pval_cols, dataset, gbrowsedf, vdata, axis_track, snps,sketch,col_details, file='data/_circdb.rdata')
+save(nums, facs, chars, exprs_cols, pval_cols, dataset, gbrowsedf,browser_gr, vdata, axis_track, snps,sketch,col_details, file='data/_circdb.rdata')
 
 
