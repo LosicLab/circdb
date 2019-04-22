@@ -1,10 +1,8 @@
 library(tidyverse)
 library(ggbio)
-
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(ASpli)
 library(Gviz)
-
 library(org.Hs.eg.db)
 
 # Get UCSC reference loaded & ready

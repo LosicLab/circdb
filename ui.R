@@ -21,7 +21,7 @@ body <- dashboardBody(
                            tabPanel(title='Browser Settings',
                                     solidHeader=TRUE,
                                     icon=icon('cog', lib='font-awesome'),
-                                    selectInput('gsymbol', 'select a circID:', gbrowsedf$BackspliceLocation, gbrowsedf$BackspliceLocation[1])
+                                    selectInput('gsymbol', 'select a circID:', gbrowsedf$circID, gbrowsedf$circID[1])
                                     )
                     ) #,
                     # tabBox(width=4,

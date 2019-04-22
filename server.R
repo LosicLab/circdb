@@ -100,22 +100,22 @@ server <- function(input, output) {
     })
 
     output$gbrowse_title <- renderText({
-        gene <- dataset[dataset$BackspliceLocation == input$gsymbol,]$GeneSymbol[1]
+        gene <- dataset[dataset$circID == input$gsymbol,]$geneID[1]
         paste0('Gene symbol: ', as.character(gene),' - ', as.character(input$gsymbol))
         })
 
     output$gbrowser <- renderPlot({
         withProgress(message = 'Loading gene browser', value=0, expr={
-                        gene <- gbrowsedf[gbrowsedf$BackspliceLocation == input$gsymbol,]$GeneSymbol[1]
-                        chr <- gbrowsedf[gbrowsedf$BackspliceLocation == input$gsymbol,]$chr[1]
-                        junction <- browser_gr[browser_gr$BackspliceLocation == input$gsymbol]
+                        gene <- gbrowsedf[gbrowsedf$circID == input$gsymbol,]$geneID[1]
+                        chr <- gbrowsedf[gbrowsedf$circID == input$gsymbol,]$chr[1]
+                        junction <- browser_gr[browser_gr$circID == input$gsymbol]
 
 
                         # get the exons with the gene coordinates
                         # to plot the backsplice
                         gquery <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene)[which(genes(TxDb.Hsapiens.UCSC.hg19.knownGene)$gene_id == junction$entrez_id),]
                         gquery <- subsetByOverlaps(exons(TxDb.Hsapiens.UCSC.hg19.knownGene), gquery)
-                        exons <- gquery[c(junction$BackspliceExon1,junction$BackspliceExon2),]
+                        exons <- gquery[c(junction$Exon1,junction$Exon2),]
                         exons$exon_id <- NULL
                         exons$value <- '5'
 
@@ -171,16 +171,12 @@ server <- function(input, output) {
     output$tbl <- DT::renderDataTable({
       columnLabels <- col_details$detail
       
-      DT::datatable(
+      datatable(
         dataset,
-        
         filter='top',
-        
-        options = list(scrollX=TRUE, scrollY='200px',
-                       columnDefs=list(list(targets='_all', class="dt-right")) ),
-        
-        container = sketch
+        options = list(scrollX=TRUE, scrollY='500px'),
+        container = sketch,
+        rownames= FALSE
       )
-      
       })
 }

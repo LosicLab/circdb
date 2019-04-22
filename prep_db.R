@@ -44,38 +44,38 @@ cid <- c('geneID', 'circID', "Exon1",
 dataset <- dataset[, cid]
 
 
-cid <- c('GeneSymbol', 'BackspliceLocation', "BackspliceExon1",
-         "BackspliceExon2", "Strand", 'SpliceType',
-         'AveExpr_log2cpm',  'AveExpr_log2cpm_Biopsy',
-         'MeanCircFraction', 'MeanCircFraction_Biopsy',
-         # DE information
-         'logFC_CD_vs_Control', 'padj_CD_vs_Control',
-         'logFC_UC_vs_Control','padj_UC_vs_Control',
-         'logFC_vdjnorm', 'padj_vdjnorm',
-         #!miRNA binding information
-         'best_binding_miRNA', 'miRNA_bind_sites_per_kB_circRNA',
-         #celltype enet model information
-         'celltype_enet_predictor', 'celltype_enet_no_parent_regressed',
-         'celltype_enet_parent_regressed', 'celltype_enet_delta_parent',
-         'celltype_enet_no_parent_regressed_rank', 'celltype_enet_parent_regressed_rank',
-         #circQTL
-         'circQTL_num_feature_cRNA', 'circQTL_num_SNP_feature_cRNA',
-         'circQTL_num_SNP_feature_mRNA' , "circQTL_middle_beta_cRNA",
-         #eQTL parent
-         'parent_eQTL_middle_beta_mRNA', 'parent_eQTL_cis_trans_mRNA',
-         'parent_eQTL_cis_trans_cRNA','parent_eQTL_common_or_uncommon', 'parent_eQTL_opposite_QTL_effect',
-         #coloc
-         'trait', 'mRNA_mlog10_pval', 'cRNA_mlog10_pval',
-         'method','is_cRNA_coloc_greater',
-         # circbase
-         'circbase_ID', 'genomic_length', 'spliced_seq_length',
-         'repeats', 'annotation', 'circRNA_study')
+# cid <- c('GeneSymbol', 'BackspliceLocation', "BackspliceExon1",
+#          "BackspliceExon2", "Strand", 'SpliceType',
+#          'AveExpr_log2cpm',  'AveExpr_log2cpm_Biopsy',
+#          'MeanCircFraction', 'MeanCircFraction_Biopsy',
+#          # DE information
+#          'logFC_CD_vs_Control', 'padj_CD_vs_Control',
+#          'logFC_UC_vs_Control','padj_UC_vs_Control',
+#          'logFC_vdjnorm', 'padj_vdjnorm',
+#          #!miRNA binding information
+#          'best_binding_miRNA', 'miRNA_bind_sites_per_kB_circRNA',
+#          #celltype enet model information
+#          'celltype_enet_predictor', 'celltype_enet_no_parent_regressed',
+#          'celltype_enet_parent_regressed', 'celltype_enet_delta_parent',
+#          'celltype_enet_no_parent_regressed_rank', 'celltype_enet_parent_regressed_rank',
+#          #circQTL
+#          'circQTL_num_feature_cRNA', 'circQTL_num_SNP_feature_cRNA',
+#          'circQTL_num_SNP_feature_mRNA' , "circQTL_middle_beta_cRNA",
+#          #eQTL parent
+#          'parent_eQTL_middle_beta_mRNA', 'parent_eQTL_cis_trans_mRNA',
+#          'parent_eQTL_cis_trans_cRNA','parent_eQTL_common_or_uncommon', 'parent_eQTL_opposite_QTL_effect',
+#          #coloc
+#          'trait', 'mRNA_mlog10_pval', 'cRNA_mlog10_pval',
+#          'method','is_cRNA_coloc_greater',
+#          # circbase
+#          'circbase_ID', 'genomic_length', 'spliced_seq_length',
+#          'repeats', 'annotation', 'circRNA_study')
 
 
 chars <- c('geneID', 'circID', 'predictor')
 dataset[, chars] <- lapply(dataset[,chars], as.character)
 
-colnames(dataset) <- cid
+# colnames(dataset) <- cid
 
 
 # separate out numeric, factor, and string columns for their appropriate selections
@@ -92,13 +92,13 @@ vdata <- dataset %>%
            padj_UC_vs_Control = -log(padj_UC_vs_Control),
            padj_vdjnorm = -log(padj_vdjnorm))
 
-ensids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$GeneSymbol), column="ENSEMBL", keytype="SYMBOL", multiVals="first")
-entrezids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$GeneSymbol), column="ENTREZID", keytype="SYMBOL", multiVals="first")
+ensids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$geneID), column="ENSEMBL", keytype="SYMBOL", multiVals="first")
+entrezids <- mapIds(org.Hs.eg.db, keys = as.character(dataset$geneID), column="ENTREZID", keytype="SYMBOL", multiVals="first")
 dataset$ensembl_id <- ensids
 dataset$entrez_id <- entrezids
 
 # define genomic browser tracks & info
-gbrowsedf <- dataset %>% tidyr::separate(col = BackspliceLocation, into=c('chr', 'start', 'end'),'-|:', remove=FALSE)
+gbrowsedf <- dataset %>% tidyr::separate(col = circID, into=c('chr', 'start', 'end'),'-|:', remove=FALSE)
 gbrowsedf$gr_strand <- as.character(gbrowsedf$Strand)
 gbrowsedf$gr_strand[gbrowsedf$gr_strand %in% c('-/+', '+/-')] <- '*'
 
@@ -116,19 +116,12 @@ sketch <- htmltools::withTags(table(
   class = 'display',
   thead(
     tr(
-      th('GeneSymbol', title='GeneSymbol: geneic locus of transcription'),
-      th('BackspliceLocation', title='Backsplice: start/end of backsplice mapping in hg19'),
-      th('circbase_ID', title='circbase_ID: circbase ID for this backsplice'),
-      th('BackspliceExon1', title='Exon_1: annotated first exon within major isoform'),
-      th('BackspliceExon2', title='Exon_2: annotated second exon within major isoform'),
+      th('GeneID', title='GeneSymbol: geneic locus of transcription'),
+      th('circID', title='Backsplice: start/end of backsplice mapping in hg19'),
+      th('Exon1', title='Exon_1: annotated first exon within major isoform'),
+      th('Exon2', title='Exon_2: annotated second exon within major isoform'),
       th('Strand', title='Strand: backsplice alignment strand'),
       th('SpliceType', title='SpliceType: exonic or intronic circRNA'),
-      th('genomic_length', title='GenomicLength: length of unspliced circRNA'),
-      th('spliced_seq_length', title='SplicedLength: length of spliced circRNA'),
-      th('annotation', title='Annotation: overlapping known hg19 annotation'),
-      th('repeats', title='Repeats: overlapping known repeats'),
-      th('in_other_samples', title='InOtherSamples: also found in these celltypes'),
-      th('circRNA_study', title='InOther_circRNA_study: also observed in these studies'),
       th('AveExpr_log2cpm', title='AverageExpression: log2cpm average MSCCR-blood expression'),
       th('AveExpr_log2cpm_Biopsy', title='AverageExpression: log2cpm average MSCCR-biopsy expression (if observed)'),
       th('mean_circ_fraction', title='MeanCircularization: backsplice support normalized by maximal forward splice (MSCCR-blood)'),
@@ -160,7 +153,16 @@ sketch <- htmltools::withTags(table(
       th('mRNA_mlog10_pval', title='mRNA_parent_cauaslity_pvalue: -log10(p_value) of causality test for risk mediation (pleiotropy null); SNP -> mRNA -> trait'),
       th('cRNA_mlog10_pval', title='circRNA_parent_cauaslity_pvalue: -log10(p_value) of causality test for risk mediation (pleiotropy null); SNP -> circRNA -> trait'),
       th('method', title='coloc_method: colcalization method used (SMR | MetaXCan | COLOC)'),
-      th('is_cRNA_coloc_greater', title='circRNA_colocalize: do circRNA daughers mediate more risk for trait than mRNA parents')
+      th('is_cRNA_coloc_greater', title='circRNA_colocalize: do circRNA daughers mediate more risk for trait than mRNA parents'),
+      th('circbase_ID', title='circbase_ID: circbase ID for this backsplice'),
+      th('genomic_length', title='GenomicLength: length of unspliced circRNA'),
+      th('spliced_seq_length', title='SplicedLength: length of spliced circRNA'),
+      th('repeats', title='Repeats: overlapping known repeats'),
+      th('annotation', title='Annotation: overlapping known hg19 annotation'),
+      #th('in_other_samples', title='InOtherSamples: also found in these celltypes'),
+      th('circRNA_study', title='InOther_circRNA_study: also observed in these studies'),
+      th('ensembl_id', title='ensembl ID of the linear parent'),
+      th('entrez_id', title='entrez ID of the linear parent')
     )
   )
 ))
