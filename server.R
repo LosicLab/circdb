@@ -15,6 +15,11 @@ server <- function(input, output) {
 
     # make the reactive scatter plot object
     output$scatter <- renderPlot({
+      
+        withProgress(message='loading scatter',
+                     
+                     value=0,
+                     expr={
 
         # this commented section isn't working yet ...
         # if (input$sclogx){
@@ -25,14 +30,24 @@ server <- function(input, output) {
         # }
 
         scatter <- ggplot(plot_data(), aes_string(x=input$scx, y=input$scy)) + geom_point() + theme_classic()
+        incProgress(amount = 0.25, detail = '...')
+        
         if (input$sccolor != 'None'){
+          incProgress(amount = 0.5, detail='...')
             scatter <- scatter + aes_string(color=input$sccolor)
         }
         facets <- paste(input$scfacet_row, '~', input$scfacet_col)
+        
         if (facets != '. ~ .'){
+          incProgress(amount = 0.75, detail='...')
             scatter <- scatter + facet_grid(facets)
         }
+        incProgress(amount = 0.9, detail='...')
+        
         print(scatter)
+        }
+        
+        )
     })
 
     # make the reactive histogram
