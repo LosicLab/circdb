@@ -47,16 +47,8 @@ crna_exons <-  exons[c(junction$Exon1:junction$Exon2),]
 bs_exon1 <- bs_exons[1, c(1:3, 5)]
 bs_exon2 <- bs_exons[2, c(1:3, 5)]
 
-
-
-png('mcm10_circos_with_snps_and_backsplice2.png', width=12, height=12, res=300, units='in')
-#colnames(exons)[1] <- 'name'
-#gquery <- as.data.frame(gquery)
 circos.par(track.height = 0.1, gap.degree=180)
-
-# , chromosome.index = paste0("chr", c(1:22, "X", "Y"))
 circos.genomicInitialize(exons)
-## important to have enough space for the plots
 circos.genomicTrack(snps_filtered, ylim=c(min(snps_filtered$beta) - 0.5, max(snps_filtered$beta) +0.5), panel.fun = function(region, beta, ...) {
     circos.genomicPoints(region, beta, col = 'blue', pch = 16, cex = 0.5, ...)
 })
@@ -89,7 +81,5 @@ circos.genomicTrack(crna_exons, ylim = c(-2.5, 2.5),
 circos.genomicLink(bs_exon1, bs_exon2, col = 'red', border = NA, h=0.1, h2=0.1)
 
 circos.clear()
-
-dev.off()
 
 

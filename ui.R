@@ -4,40 +4,35 @@
 # UI
 #------------
 
-header <- dashboardHeader(title = 'circdb [MSCCR blood]')
-
-body <- dashboardBody(
-    tabItems(
-        # start with a dashboard-style home page
-        tabItem(tabName = "visualize",
-                fluidRow(
-                    tabBox(width=12,
-                           tabPanel(title = "Gene Browser",
-                                    solidHeader = TRUE,
-                                    h5(textOutput('gbrowse_title')),
-                                    plotOutput("gbrowser")
-                                    ),
-
-                           tabPanel(title='Browser Settings',
-                                    solidHeader=TRUE,
-                                    icon=icon('cog', lib='font-awesome'),
-                                    selectInput('gsymbol', 'select a circID:', gbrowsedf$circID, gbrowsedf$circID[1])
-                                    )
-                    ) #,
-                    # tabBox(width=4,
-                    #        tabPanel(title = "Regulatory circQTLs",
-                    #                 solidHeader = TRUE,
-                    #                 h5(textOutput('circQTL_title')),
-                    #                 plotOutput("circqtlos")
-                    #        ),
-                    #        
-                    #        tabPanel(title='circQTL Settings',
-                    #                 solidHeader=TRUE,
-                    #                 icon=icon('cog', lib='font-awesome'),
-                    #                 selectInput('circqtlid', 'select a circID:', snps$trait_id, snps$trait_id[1])
-                    #        )
-                    #)
-                ),
+ui <- navbarPage('circDB',
+          
+          # PAGE 1: circRNA Browser to look at your favorite circle
+          tabPanel("circBrowser",
+                   sidebarLayout(
+                     sidebarPanel(selectInput('gsymbol', 'select a circID:', gbrowsedf$circID, gbrowsedf$circID[1])),
+                     mainPanel(
+                       fluidRow(
+                         valueBox(input$gsymbol, icon = 'dna')
+                         ),
+                       fluidRow(
+                               box(width=8,
+                                   title = "Gene Browser",
+                                                solidHeader = TRUE,
+                                                h5(textOutput('gbrowse_title')),
+                                                plotOutput("gbrowser")
+                               ),
+                               box(width=4,
+                                     title = "Regulatory circQTLs",
+                                     solidHeader = TRUE,
+                                     h5(textOutput('circQTL_title')),
+                                     plotOutput("circqtlos")
+                               )
+                               )
+                     )
+                   )
+          ),
+    # PAGE 2: explorer plots  
+    tabPanel(
                 fluidRow(
                   tabBox(width=12,
                          tabPanel(title = "Volcano Plots",
@@ -88,22 +83,13 @@ body <- dashboardBody(
                        )
                 )
                 )
-        ),
+        )
+),
 
-        tabItem(tabName = "table",
+# PAGE 3: 
+tabPanel(title= "table",
                 fluidRow(box(title= 'Table Explorer',
                              solidHeader = TRUE, DT::dataTableOutput('tbl'), width = 12))
         )
-    )
 )
-
-sidebar <- dashboardSidebar(
-    menuItem("Vizualize", tabName = "visualize", icon=icon('chart-area', lib='font-awesome')),
-    menuItem("Explore Table", tabName = "table", icon = icon('columns', lib="font-awesome"))
-)
-
-ui <- dashboardPage(
-    header,
-    sidebar,
-    body
 )
