@@ -161,7 +161,7 @@ server <- function(input, output) {
     output$circqtlos <- renderPlot({
 
       # Prep the data
-      snps_filtered <- read_tsv('data/common_cRNA_mRNA_SNPS_by_gene.txt') %>%
+      snps_filtered <- snps %>%
           as_tibble() %>%
           dplyr::filter(trait_id == input$circqtlid) %>%
           mutate(chr=paste0('chr', chr),
@@ -169,7 +169,6 @@ server <- function(input, output) {
                  pos2=as.numeric(pos))
       
       snps_filtered <- as.data.frame(snps_filtered)
-      snps_filtered <- snps_filtered[, c(1,5,19, 2:4, 6:18)]
       
       
       gene <- gbrowsedf[gbrowsedf$circID == input$circqtlid,]$geneID[1]
@@ -218,7 +217,7 @@ server <- function(input, output) {
                           }, bg.border = NA)
       
       
-      circos.genomicTrack(crna_exons, ylim = c(-2.5, 2.5),
+      circos.genomicTrack(crna_ exons, ylim = c(-2.5, 2.5),
                           panel.fun = function(region, value, ...) {
                               # for each transcript
                               current_tx_start = min(region[, 1])
@@ -250,5 +249,5 @@ server <- function(input, output) {
       )
       })
     
-    output$about_text <- renderText({expr = 'About this page.'})
+    output$about_text <- renderText({'About this page.'})
 }
